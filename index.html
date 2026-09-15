@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#101211">
+  <title>Advaita / not two.</title>
+  <link rel="icon" href="data:,">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="stylesheet" href="./styles.css">
+  <script type="importmap">{"imports":{"three":"./vendor/three.module.js"}}</script>
+  <script src="./vendor/lucide.js" defer></script>
+</head>
+<body>
+  <header class="masthead">
+    <a class="wordmark" href="./" aria-label="Advaita home">advaita<span class="brand-dot">*</span><small>not two.</small></a>
+    <div class="header-date" id="headerDate"></div>
+    <button class="profile-button" data-action="settings" title="Your preferences" aria-label="Your preferences"><span id="avatar">E</span><i data-lucide="sliders-horizontal"></i></button>
+  </header>
+  <nav class="navigation" aria-label="Main navigation">
+    <button class="selected" data-action="now" title="Now" aria-label="Now"><i data-lucide="aperture"></i><span>Now</span></button>
+    <button data-action="orbit" title="Your world" aria-label="Your world"><i data-lucide="orbit"></i><span>World</span></button>
+    <button data-action="memory" title="Memory" aria-label="Memory"><i data-lucide="fingerprint"></i><span>Memory</span></button>
+    <button data-action="history" title="Life timeline" aria-label="Life timeline"><i data-lucide="chart-no-axes-combined"></i><span>Story</span></button>
+  </nav>
+  <main>
+    <section class="today-layout">
+      <div class="living-space">
+        <div class="greeting"><div class="eyebrow"><span class="live-dot"></span><span id="greetingName">YOUR WORLD, EYAL</span></div><h1>A little more<br><em>in sync.</em></h1></div>
+        <div id="sculpture" role="img" aria-label="Interactive chrome knot connecting mind, body and direction"><div class="scene-fallback" hidden>not two.</div></div>
+        <div class="scene-controls"><button class="icon-button" data-action="motion" title="Pause animation" aria-label="Pause animation"><i data-lucide="pause"></i></button><button class="icon-button" data-action="reset-scene" title="Reset sculpture" aria-label="Reset sculpture"><i data-lucide="rotate-ccw"></i></button></div>
+        <button class="world-node node-mind" data-world="mind"><span class="node-symbol"><i data-lucide="sparkles"></i></span><span><strong>Mind</strong><small id="mindCount">A space to think</small></span><i data-lucide="arrow-up-right" class="node-arrow"></i></button>
+        <button class="world-node node-body" data-world="body"><span class="node-symbol"><i data-lucide="activity"></i></span><span><strong>Body</strong><small id="bodyCount">Find your rhythm</small></span><i data-lucide="arrow-up-right" class="node-arrow"></i></button>
+        <button class="world-node node-direction" data-world="direction"><span class="node-symbol"><i data-lucide="move-up-right"></i></span><span><strong>Direction</strong><small id="directionCount">Make space for what matters</small></span></button>
+        <div class="scene-footer"><span class="scene-index">01 / THE WHOLE OF YOU</span><span class="scene-caption">Many parts. <em>One you.</em></span></div>
+      </div>
+      <aside class="day-space">
+        <div class="section-label"><span id="dayLabel">TODAY</span><span class="tiny-tag">ON THIS DEVICE</span></div>
+        <div class="day-heading"><h2>Your day,<br><em>with room to breathe.</em></h2><button class="icon-button" data-action="plan" title="Add to your day" aria-label="Add to your day"><i data-lucide="plus"></i></button></div>
+        <div class="day-progress"><span id="dayProgress">A fresh page</span><div><i id="progressFill"></i></div></div>
+        <div id="agenda"></div>
+        <button class="focus-launch" data-action="focus"><span class="focus-mark"><i data-lucide="scan-line"></i></span><span><strong>A little space to focus</strong><small id="focusPreview">25 minutes. One thing.</small></span><i data-lucide="arrow-up-right"></i></button>
+        <div class="day-footnote"><i data-lucide="sun"></i><span id="dayFootnote">There is room for a slower moment, too.</span></div>
+        <div class="day-tools"><button data-action="planner"><i data-lucide="calendar-clock"></i>Find some room</button><button data-action="energy"><i data-lucide="battery-medium"></i>Check in</button></div>
+      </aside>
+    </section>
+    <section class="under-current">
+      <div class="section-label"><span>A THREAD TO PULL</span><span>SMALL THINGS, CONNECTED</span></div>
+      <div class="current-layout"><div><h2>What's on<br><em>your mind?</em></h2><p id="memoryWhisper">Start anywhere. It all belongs here.</p></div><div class="quick-actions"><button data-action="think"><span class="action-number">01</span><span>Get it out of my head</span><i data-lucide="arrow-up-right"></i></button><button data-action="eat"><span class="action-number">02</span><span>I just ate something</span><i data-lucide="arrow-up-right"></i></button><button data-action="move"><span class="action-number">03</span><span>Made time to move</span><i data-lucide="arrow-up-right"></i></button></div></div>
+    </section>
+  </main>
+  <form class="capture-bar" id="quickCapture"><span class="capture-symbol"><i data-lucide="asterisk"></i></span><input aria-label="Capture a thought, meal or task" id="quickInput" placeholder="A thought, a plan, anything..." autocomplete="off" maxlength="2000"><button type="submit" aria-label="Capture" title="Capture"><i data-lucide="arrow-up"></i></button></form>
+  <dialog id="sheet" aria-labelledby="sheetTitle"><div class="sheet-top"><span class="eyebrow" id="sheetEyebrow">ADVAITA / YOUR SPACE</span><button class="icon-button" data-action="close" title="Close" aria-label="Close"><i data-lucide="x"></i></button></div><div id="sheetContent"></div></dialog>
+  <div id="toast" role="status"></div>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>

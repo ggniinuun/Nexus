@@ -1,0 +1,9 @@
+{
+  "name":"advaita-life-os",
+  "version":"1.0.0",
+  "private":true,
+  "type":"module",
+  "scripts":{"start":"node serve.mjs","test":"node tests/final-check.mjs"},
+  "engines":{"node":">=20"},
+  "description":"Static Advaita app. Runtime libraries and fonts are vendored; npm install is unnecessary."
+}

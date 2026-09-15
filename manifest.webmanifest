@@ -1,0 +1,10 @@
+{
+  "name": "Advaita",
+  "short_name": "Advaita",
+  "description": "Advaita. Many parts. One you.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#101211",
+  "theme_color": "#101211",
+  "icons": []
+}
