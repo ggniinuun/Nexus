@@ -1,2 +1,0 @@
-# Nexus
-    NEXUS Life OS
