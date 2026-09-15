@@ -1,0 +1,391 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
+  <meta name="theme-color" content="#090a0f" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="NEXUS" />
+  <link rel="apple-touch-icon" href="icon-180.png" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <title>NEXUS — Life OS</title>
+  <style>
+    :root{
+      --bg:#07080c; --panel:#0e1017; --panel2:#11141d; --text:#f5f7fb;
+      --muted:#8d93a5; --line:rgba(255,255,255,.085); --accent:#7c5cff;
+      --accent2:#22d3ee; --good:#4ade80; --warn:#fbbf24; --danger:#fb7185;
+      --shadow:0 24px 90px rgba(0,0,0,.38);
+      --radius:26px;
+    }
+    *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+    html,body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text",Segoe UI,sans-serif;min-height:100%;overscroll-behavior:none}
+    body{background:
+      radial-gradient(1000px 700px at 70% -10%, color-mix(in srgb,var(--accent) 18%, transparent), transparent 60%),
+      radial-gradient(900px 600px at -10% 25%, color-mix(in srgb,var(--accent2) 12%, transparent), transparent 62%),
+      var(--bg);}
+    button,input,textarea,select{font:inherit}
+    button{color:inherit}
+    .app{max-width:720px;margin:0 auto;min-height:100vh;padding:calc(env(safe-area-inset-top) + 16px) 16px calc(108px + env(safe-area-inset-bottom))}
+    .topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+    .brand{display:flex;align-items:center;gap:12px}
+    .sigil{width:43px;height:43px;border-radius:15px;position:relative;background:
+      conic-gradient(from 180deg,var(--accent),var(--accent2),#ffffff,var(--accent));box-shadow:0 0 35px color-mix(in srgb,var(--accent) 42%, transparent)}
+    .sigil:after{content:"";position:absolute;inset:3px;background:#090b10;border-radius:12px}
+    .sigil:before{content:"N";position:absolute;z-index:2;inset:0;display:grid;place-items:center;font-weight:900;font-size:17px;letter-spacing:-1px}
+    .brand h1{font-size:17px;margin:0;letter-spacing:.08em}.brand small{display:block;color:var(--muted);font-size:11px;margin-top:3px;letter-spacing:.08em}
+    .iconbtn{width:44px;height:44px;border-radius:15px;border:1px solid var(--line);background:rgba(255,255,255,.045);display:grid;place-items:center;box-shadow:inset 0 1px rgba(255,255,255,.06)}
+    .hero{padding:24px;border:1px solid var(--line);border-radius:32px;background:linear-gradient(145deg,rgba(255,255,255,.075),rgba(255,255,255,.025));box-shadow:var(--shadow);position:relative;overflow:hidden}
+    .hero:before{content:"";position:absolute;width:280px;height:280px;border-radius:50%;right:-130px;top:-150px;background:radial-gradient(circle,var(--accent),transparent 66%);opacity:.25;filter:blur(4px)}
+    .eyebrow{color:var(--muted);font-size:12px;letter-spacing:.12em;text-transform:uppercase}
+    .hero h2{font-size:33px;line-height:1.03;letter-spacing:-.055em;margin:8px 0 12px;max-width:480px}
+    .hero p{margin:0;color:#b8bdca;font-size:14px;line-height:1.5;max-width:480px}
+    .pulse-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:20px}
+    .metric{padding:14px;border:1px solid var(--line);background:rgba(0,0,0,.16);border-radius:18px}
+    .metric strong{display:block;font-size:20px;letter-spacing:-.04em}.metric span{font-size:11px;color:var(--muted)}
+    .section-title{display:flex;align-items:end;justify-content:space-between;margin:24px 2px 12px}.section-title h3{margin:0;font-size:16px;letter-spacing:-.02em}.section-title span{font-size:12px;color:var(--muted)}
+    .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .card{border:1px solid var(--line);border-radius:var(--radius);padding:18px;background:linear-gradient(145deg,rgba(255,255,255,.055),rgba(255,255,255,.018));box-shadow:inset 0 1px rgba(255,255,255,.04);position:relative;overflow:hidden}
+    .card h4{margin:0 0 6px;font-size:15px}.card p{margin:0;color:var(--muted);font-size:12px;line-height:1.45}
+    .quick{min-height:142px;display:flex;flex-direction:column;justify-content:space-between}
+    .qicon{width:44px;height:44px;border-radius:16px;display:grid;place-items:center;font-size:20px;background:color-mix(in srgb,var(--accent) 15%, rgba(255,255,255,.03));border:1px solid color-mix(in srgb,var(--accent) 35%, transparent)}
+    .screen{display:none;animation:enter .32s cubic-bezier(.2,.7,.2,1)}
+    .screen.active{display:block}
+    @keyframes enter{from{opacity:0;transform:translateY(8px) scale(.99)}to{opacity:1;transform:none}}
+    .tabs{position:fixed;z-index:50;left:50%;transform:translateX(-50%);bottom:calc(10px + env(safe-area-inset-bottom));width:min(calc(100% - 24px),690px);padding:8px;display:grid;grid-template-columns:repeat(6,1fr);gap:4px;border-radius:26px;background:rgba(10,11,16,.82);backdrop-filter:blur(22px) saturate(155%);border:1px solid rgba(255,255,255,.1);box-shadow:0 18px 60px rgba(0,0,0,.55)}
+    .tab{height:56px;border:0;background:transparent;border-radius:19px;color:#72798b;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:3px;font-size:9px;font-weight:700}
+    .tab svg{width:20px;height:20px;stroke-width:1.8}
+    .tab.active{color:#fff;background:linear-gradient(145deg,color-mix(in srgb,var(--accent) 28%, transparent),rgba(255,255,255,.07));box-shadow:inset 0 1px rgba(255,255,255,.08)}
+    .fab{position:fixed;z-index:55;right:max(24px,calc((100vw - 720px)/2 + 24px));bottom:calc(86px + env(safe-area-inset-bottom));width:58px;height:58px;border:0;border-radius:21px;background:linear-gradient(145deg,var(--accent),var(--accent2));box-shadow:0 14px 35px color-mix(in srgb,var(--accent) 36%, transparent);font-size:30px;font-weight:300;transition:.2s}
+    .fab:active{transform:scale(.92) rotate(8deg)}
+    .modal{position:fixed;z-index:100;inset:0;display:none;align-items:end;justify-content:center;background:rgba(0,0,0,.56);backdrop-filter:blur(10px)}
+    .modal.show{display:flex}
+    .sheet{width:min(100%,720px);max-height:90vh;overflow:auto;border-radius:34px 34px 0 0;background:#0c0e14;border:1px solid var(--line);padding:16px 18px calc(22px + env(safe-area-inset-bottom));animation:sheet .28s cubic-bezier(.2,.7,.2,1)}
+    @keyframes sheet{from{transform:translateY(35px);opacity:.3}to{transform:none;opacity:1}}
+    .handle{width:42px;height:5px;background:#2a2d37;border-radius:99px;margin:0 auto 15px}
+    .sheethead{display:flex;justify-content:space-between;align-items:center}.sheethead h3{margin:0;font-size:20px}
+    .close{border:0;background:#1a1d25;width:38px;height:38px;border-radius:14px}
+    .field{margin-top:14px}.field label{display:block;color:var(--muted);font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin:0 0 7px 3px}
+    input,textarea,select{width:100%;border:1px solid var(--line);background:#13161f;color:#fff;border-radius:17px;padding:14px 15px;outline:none}
+    textarea{min-height:130px;resize:vertical;line-height:1.5}
+    input:focus,textarea:focus,select:focus{border-color:color-mix(in srgb,var(--accent) 60%, white 5%);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 14%, transparent)}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .primary{width:100%;margin-top:16px;border:0;border-radius:18px;padding:15px 18px;font-weight:800;background:linear-gradient(135deg,var(--accent),var(--accent2));box-shadow:0 14px 32px color-mix(in srgb,var(--accent) 24%, transparent)}
+    .ghost{border:1px solid var(--line);background:#12151d;border-radius:16px;padding:12px 14px}
+    .list{display:flex;flex-direction:column;gap:10px}
+    .item{border:1px solid var(--line);background:linear-gradient(145deg,rgba(255,255,255,.05),rgba(255,255,255,.018));border-radius:22px;padding:16px;display:flex;gap:13px;align-items:flex-start}
+    .item .bubble{flex:0 0 43px;height:43px;border-radius:15px;display:grid;place-items:center;background:color-mix(in srgb,var(--accent) 16%, rgba(255,255,255,.03));font-size:18px}
+    .item .content{flex:1;min-width:0}.item h4{margin:1px 0 5px;font-size:14px}.item p{margin:0;color:var(--muted);font-size:12px;line-height:1.45;white-space:pre-wrap}
+    .meta{margin-top:8px;display:flex;flex-wrap:wrap;gap:6px}.pill{font-size:10px;padding:5px 8px;border-radius:999px;background:#171a23;border:1px solid var(--line);color:#aeb4c3}
+    .item-actions{display:flex;gap:6px}.tiny{width:33px;height:33px;border-radius:12px;border:1px solid var(--line);background:#13161e}
+    .empty{padding:34px 20px;text-align:center;border:1px dashed rgba(255,255,255,.12);border-radius:24px;color:var(--muted)}
+    .moods{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}.mood{padding:11px 0;text-align:center;border:1px solid var(--line);background:#13161f;border-radius:15px;font-size:21px}.mood.sel{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 18%, #13161f);transform:translateY(-2px)}
+    .nutrition{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+    .ring{aspect-ratio:1;border-radius:50%;display:grid;place-items:center;position:relative;background:conic-gradient(var(--ringcol) var(--pct),rgba(255,255,255,.075) 0)}
+    .ring:after{content:"";position:absolute;inset:7px;border-radius:50%;background:#0c0f15}
+    .ring .inside{position:relative;z-index:2;text-align:center}.ring strong{display:block;font-size:13px}.ring small{font-size:8px;color:var(--muted)}
+    .calhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.calhead h3{margin:0;font-size:19px}
+    .calgrid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}.dow{text-align:center;color:var(--muted);font-size:10px;padding:7px 0}.day{aspect-ratio:1;border:1px solid transparent;border-radius:15px;background:rgba(255,255,255,.025);display:flex;align-items:center;justify-content:center;position:relative;font-size:12px}.day.dim{opacity:.22}.day.today{border-color:var(--accent);box-shadow:0 0 0 2px color-mix(in srgb,var(--accent) 12%, transparent)}.day.has:after{content:"";position:absolute;width:4px;height:4px;border-radius:50%;bottom:6px;background:var(--accent2)}
+    .day.selected{background:linear-gradient(145deg,var(--accent),var(--accent2));font-weight:900}
+    .progress{height:9px;background:#171a22;border-radius:99px;overflow:hidden}.bar{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:99px;transition:.4s}
+    .goal-card{padding:18px;border:1px solid var(--line);border-radius:24px;background:linear-gradient(145deg,rgba(255,255,255,.055),rgba(255,255,255,.018))}
+    .goal-top{display:flex;gap:12px;align-items:start}.goal-emoji{font-size:26px;width:50px;height:50px;border-radius:17px;background:#151821;display:grid;place-items:center}.goal-main{flex:1}.goal-main h4{margin:2px 0 6px;font-size:15px}.goal-main p{margin:0;color:var(--muted);font-size:12px}.goal-stat{font-size:12px;color:#c8ccd7;margin-top:10px;display:flex;justify-content:space-between}
+    .slider{width:100%;accent-color:var(--accent);margin-top:12px}
+    .settingspanel{display:grid;gap:12px}.settingsline{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:14px;border:1px solid var(--line);border-radius:18px;background:rgba(255,255,255,.025)}
+    .swatches{display:flex;gap:8px}.sw{width:27px;height:27px;border-radius:9px;border:2px solid rgba(255,255,255,.13)}
+    .quote{font-size:22px;line-height:1.25;letter-spacing:-.035em;margin:5px 0 0}
+    .mini-btn{border:1px solid var(--line);background:#13161e;border-radius:13px;padding:9px 11px;font-size:11px;color:#c6cbd7}
+    .flash{position:fixed;z-index:200;left:50%;top:calc(18px + env(safe-area-inset-top));transform:translate(-50%,-15px);opacity:0;padding:11px 16px;border-radius:15px;background:#151922;border:1px solid var(--line);box-shadow:0 16px 45px rgba(0,0,0,.45);font-size:12px;transition:.25s;pointer-events:none}
+    .flash.show{transform:translate(-50%,0);opacity:1}
+    .confetti{position:fixed;z-index:250;pointer-events:none;width:8px;height:13px;border-radius:2px}
+    .searchbar{margin-bottom:14px}
+    .kbd{font-size:9px;padding:2px 5px;border:1px solid var(--line);border-radius:6px;color:var(--muted)}
+    @media(max-width:430px){.hero h2{font-size:30px}.grid2{gap:10px}.card{padding:16px}.tab span{display:none}.tab{height:52px}.nutrition{gap:6px}.ring:after{inset:6px}}
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="topbar">
+      <div class="brand"><div class="sigil"></div><div><h1>NEXUS</h1><small>YOUR LIFE, ORCHESTRATED</small></div></div>
+      <button class="iconbtn" id="settingsBtn" aria-label="Settings">⚙︎</button>
+    </div>
+
+    <main>
+      <section class="screen active" id="home">
+        <div class="hero">
+          <div class="eyebrow" id="dateLabel"></div>
+          <h2 id="greeting">Your life, in one place.</h2>
+          <p id="dailyLine">Capture the day. Fuel the body. Protect your time. Move the goals.</p>
+          <div class="pulse-row">
+            <div class="metric"><strong id="moodMetric">—</strong><span>latest mood</span></div>
+            <div class="metric"><strong id="calMetric">0</strong><span>kcal today</span></div>
+            <div class="metric"><strong id="goalMetric">0%</strong><span>goal avg</span></div>
+          </div>
+        </div>
+
+        <div class="section-title"><h3>Quick capture</h3><span>tap anything</span></div>
+        <div class="grid2">
+          <button class="card quick" data-quick="journal" style="text-align:left;color:inherit"><div class="qicon">✦</div><div><h4>Journal</h4><p>Freeze a thought before it disappears.</p></div></button>
+          <button class="card quick" data-quick="food" style="text-align:left;color:inherit"><div class="qicon">◒</div><div><h4>Food</h4><p>Log calories and macros in seconds.</p></div></button>
+          <button class="card quick" data-quick="event" style="text-align:left;color:inherit"><div class="qicon">◫</div><div><h4>Calendar</h4><p>Put the next thing on the map.</p></div></button>
+          <button class="card quick" data-quick="reminder" style="text-align:left;color:inherit"><div class="qicon">✓</div><div><h4>Reminder</h4><p>Get it out of your head.</p></div></button>
+        </div>
+
+        <div class="section-title"><h3>Today</h3><span id="todayCount"></span></div>
+        <div class="list" id="todayFeed"></div>
+      </section>
+
+      <section class="screen" id="journal">
+        <div class="hero">
+          <div class="eyebrow">JOURNAL</div>
+          <div class="quote">“Make your head quieter by putting it somewhere.”</div>
+          <div style="display:flex;gap:8px;margin-top:16px">
+            <button class="mini-btn" id="newJournal">+ New entry</button>
+            <button class="mini-btn" id="journalSearchBtn">Search</button>
+          </div>
+        </div>
+        <div class="section-title"><h3>Entries</h3><span id="journalCount"></span></div>
+        <div class="list" id="journalList"></div>
+      </section>
+
+      <section class="screen" id="food">
+        <div class="hero">
+          <div class="eyebrow">FOOD / TODAY</div>
+          <h2 style="font-size:27px;margin-bottom:16px">Fuel dashboard</h2>
+          <div class="nutrition" id="rings"></div>
+          <div style="display:flex;gap:8px;margin-top:16px">
+            <button class="mini-btn" id="newFood">+ Log food</button>
+            <button class="mini-btn" id="editTargets">Targets</button>
+          </div>
+        </div>
+        <div class="section-title"><h3>Today's log</h3><span id="foodCount"></span></div>
+        <div class="list" id="foodList"></div>
+      </section>
+
+      <section class="screen" id="calendar">
+        <div class="card">
+          <div class="calhead">
+            <button class="tiny" id="prevMonth">‹</button>
+            <h3 id="monthLabel"></h3>
+            <button class="tiny" id="nextMonth">›</button>
+          </div>
+          <div class="calgrid" id="calendarGrid"></div>
+        </div>
+        <div class="section-title"><h3 id="selectedDateLabel">Selected day</h3><span><button class="mini-btn" id="newEvent">+ Event</button></span></div>
+        <div class="list" id="eventList"></div>
+      </section>
+
+      <section class="screen" id="reminders">
+        <div class="hero">
+          <div class="eyebrow">REMINDERS</div>
+          <h2 style="font-size:27px">Nothing important should live only in your head.</h2>
+          <button class="mini-btn" id="newReminder" style="margin-top:14px">+ New reminder</button>
+        </div>
+        <div class="section-title"><h3>Open</h3><span id="reminderCount"></span></div>
+        <div class="list" id="reminderList"></div>
+      </section>
+
+      <section class="screen" id="goals">
+        <div class="hero">
+          <div class="eyebrow">GOALS</div>
+          <h2 style="font-size:27px">Turn vague ambition into visible motion.</h2>
+          <button class="mini-btn" id="newGoal" style="margin-top:14px">+ New goal</button>
+        </div>
+        <div class="section-title"><h3>Active goals</h3><span id="goalCount"></span></div>
+        <div class="list" id="goalList"></div>
+      </section>
+    </main>
+  </div>
+
+  <button class="fab" id="fab">+</button>
+  <div class="tabs">
+    <button class="tab active" data-screen="home"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5V21H3z"/><path d="M9 21v-7h6v7"/></svg><span>Home</span></button>
+    <button class="tab" data-screen="journal"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 4h14v16H5z"/><path d="M8 8h8M8 12h8M8 16h5"/></svg><span>Journal</span></button>
+    <button class="tab" data-screen="food"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M7 3v8M4 3v5c0 2 1 3 3 3s3-1 3-3V3M7 11v10M16 3v18M16 3c3 2 4 5 4 8h-4"/></svg><span>Food</span></button>
+    <button class="tab" data-screen="calendar"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 6h16v14H4zM7 3v6M17 3v6M4 10h16"/></svg><span>Calendar</span></button>
+    <button class="tab" data-screen="reminders"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 4h12v16H6z"/><path d="m9 12 2 2 4-5"/></svg><span>Reminders</span></button>
+    <button class="tab" data-screen="goals"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4"/><path d="m15 9 5-5"/></svg><span>Goals</span></button>
+  </div>
+
+  <div class="modal" id="modal"><div class="sheet"><div class="handle"></div><div class="sheethead"><h3 id="modalTitle">Add</h3><button class="close" id="closeModal">×</button></div><div id="modalBody"></div></div></div>
+  <div class="flash" id="flash"></div>
+
+<script>
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const uid=()=>Math.random().toString(36).slice(2)+Date.now().toString(36);
+const isoDate=d=>{ const x=new Date(d); return `${x.getFullYear()}-${String(x.getMonth()+1).padStart(2,'0')}-${String(x.getDate()).padStart(2,'0')}` };
+const esc=s=>(s??'').toString().replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+const vibrate=()=>{try{navigator.vibrate?.(8)}catch{}};
+const storeKey='nexus-life-os-v1';
+let state=JSON.parse(localStorage.getItem(storeKey)||'null')||{
+  journal:[], food:[], events:[], reminders:[], goals:[],
+  targets:{cal:2200,protein:180,carbs:200,fat:70},
+  settings:{accent:'#7c5cff',accent2:'#22d3ee'}
+};
+let calCursor=new Date(); calCursor.setDate(1); let selectedDate=isoDate(new Date());
+function save(){localStorage.setItem(storeKey,JSON.stringify(state)); renderAll()}
+function flash(msg){const f=$('#flash');f.textContent=msg;f.classList.add('show');setTimeout(()=>f.classList.remove('show'),1600)}
+function openModal(title,html){$('#modalTitle').textContent=title;$('#modalBody').innerHTML=html;$('#modal').classList.add('show');vibrate()}
+function closeModal(){$('#modal').classList.remove('show')}
+$('#closeModal').onclick=closeModal; $('#modal').addEventListener('click',e=>{if(e.target.id==='modal')closeModal()});
+function fmtDateTime(v){if(!v)return'';const d=new Date(v);return d.toLocaleString([], {weekday:'short',day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}
+function todayISO(){return isoDate(new Date())}
+
+function setScreen(name){
+  $$('.screen').forEach(x=>x.classList.toggle('active',x.id===name));
+  $$('.tab').forEach(x=>x.classList.toggle('active',x.dataset.screen===name));
+  vibrate(); window.scrollTo({top:0,behavior:'smooth'});
+}
+$$('.tab').forEach(b=>b.onclick=()=>setScreen(b.dataset.screen));
+
+const moods=['😵','😕','😐','🙂','🔥'];
+function journalForm(){
+  openModal('New journal entry',`
+    <div class="field"><label>How are you feeling?</label><div class="moods">${moods.map((m,i)=>`<button class="mood" data-v="${i+1}">${m}</button>`).join('')}</div><input type="hidden" id="moodVal" value="3"></div>
+    <div class="field"><label>Title</label><input id="jTitle" placeholder="What is this about?"></div>
+    <div class="field"><label>Write it out</label><textarea id="jBody" placeholder="No structure. Just get it out."></textarea></div>
+    <div class="field"><label>Tags</label><input id="jTags" placeholder="uni, gym, idea..."></div>
+    <button class="primary" id="saveJournal">Save entry</button>`);
+  $$('.mood').forEach((b,i)=>{if(i===2)b.classList.add('sel');b.onclick=()=>{$$('.mood').forEach(x=>x.classList.remove('sel'));b.classList.add('sel');$('#moodVal').value=b.dataset.v;vibrate()}});
+  $('#saveJournal').onclick=()=>{const body=$('#jBody').value.trim();if(!body)return flash('Write something first');state.journal.unshift({id:uid(),title:$('#jTitle').value.trim()||'Untitled',body,mood:+$('#moodVal').value,tags:$('#jTags').value.split(',').map(x=>x.trim()).filter(Boolean),created:new Date().toISOString()});save();closeModal();flash('Journal saved')};
+}
+function foodForm(){
+  openModal('Log food',`
+    <div class="field"><label>Food / meal</label><input id="fName" placeholder="Chicken, potatoes, dinner..."></div>
+    <div class="row"><div class="field"><label>Calories</label><input id="fCal" inputmode="numeric" type="number" placeholder="0"></div><div class="field"><label>Protein (g)</label><input id="fP" inputmode="decimal" type="number" placeholder="0"></div></div>
+    <div class="row"><div class="field"><label>Carbs (g)</label><input id="fC" inputmode="decimal" type="number" placeholder="0"></div><div class="field"><label>Fat (g)</label><input id="fF" inputmode="decimal" type="number" placeholder="0"></div></div>
+    <button class="primary" id="saveFood">Add to today</button>`);
+  $('#saveFood').onclick=()=>{const name=$('#fName').value.trim();if(!name)return flash('Name the food');state.food.unshift({id:uid(),name,cal:+$('#fCal').value||0,p:+$('#fP').value||0,c:+$('#fC').value||0,f:+$('#fF').value||0,created:new Date().toISOString()});save();closeModal();flash('Food logged')};
+}
+function eventForm(date=selectedDate){
+  openModal('New calendar event',`
+    <div class="field"><label>Event</label><input id="eTitle" placeholder="Uni, gym, appointment..."></div>
+    <div class="row"><div class="field"><label>Date</label><input id="eDate" type="date" value="${date}"></div><div class="field"><label>Time</label><input id="eTime" type="time" value="12:00"></div></div>
+    <div class="field"><label>Notes</label><textarea id="eNotes" style="min-height:90px" placeholder="Anything useful..."></textarea></div>
+    <button class="primary" id="saveEvent">Add event</button>`);
+  $('#saveEvent').onclick=()=>{const t=$('#eTitle').value.trim();if(!t)return flash('Name the event');state.events.push({id:uid(),title:t,date:$('#eDate').value,time:$('#eTime').value,notes:$('#eNotes').value.trim()});save();closeModal();selectedDate=$('#eDate')?.value||selectedDate;flash('Event added')};
+}
+function reminderForm(){
+  const now=new Date();now.setHours(now.getHours()+1);const dv=`${isoDate(now)}T${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+  openModal('New reminder',`
+    <div class="field"><label>Reminder</label><input id="rTitle" placeholder="Do the thing..."></div>
+    <div class="field"><label>When</label><input id="rWhen" type="datetime-local" value="${dv}"></div>
+    <div class="field"><label>Priority</label><select id="rPriority"><option>Normal</option><option>High</option><option>Critical</option></select></div>
+    <button class="primary" id="saveReminder">Create reminder</button>`);
+  $('#saveReminder').onclick=()=>{const t=$('#rTitle').value.trim();if(!t)return flash('What should I remind you about?');state.reminders.unshift({id:uid(),title:t,when:$('#rWhen').value,priority:$('#rPriority').value,done:false});save();closeModal();flash('Reminder created')};
+}
+function goalForm(){
+  openModal('New goal',`
+    <div class="field"><label>Goal</label><input id="gTitle" placeholder="Lose 5 kg, finish course, save $2k..."></div>
+    <div class="row"><div class="field"><label>Icon</label><input id="gEmoji" value="🎯"></div><div class="field"><label>Target date</label><input id="gDate" type="date"></div></div>
+    <div class="field"><label>Why it matters</label><textarea id="gWhy" style="min-height:90px" placeholder="Make this worth caring about."></textarea></div>
+    <button class="primary" id="saveGoal">Start goal</button>`);
+  $('#saveGoal').onclick=()=>{const t=$('#gTitle').value.trim();if(!t)return flash('Name the goal');state.goals.unshift({id:uid(),title:t,emoji:$('#gEmoji').value||'🎯',date:$('#gDate').value,why:$('#gWhy').value.trim(),progress:0});save();closeModal();flash('Goal started')};
+}
+function quickMenu(){
+  openModal('Quick add',`<div class="grid2" style="margin-top:10px">
+    <button class="card quick" data-qm="journal"><div class="qicon">✦</div><div><h4>Journal</h4><p>Thoughts & mood</p></div></button>
+    <button class="card quick" data-qm="food"><div class="qicon">◒</div><div><h4>Food</h4><p>Calories & macros</p></div></button>
+    <button class="card quick" data-qm="event"><div class="qicon">◫</div><div><h4>Event</h4><p>Calendar item</p></div></button>
+    <button class="card quick" data-qm="reminder"><div class="qicon">✓</div><div><h4>Reminder</h4><p>Get it done</p></div></button>
+    <button class="card quick" data-qm="goal"><div class="qicon">◎</div><div><h4>Goal</h4><p>Track progress</p></div></button>
+  </div>`);
+  $$('[data-qm]').forEach(b=>b.onclick=()=>({journal:journalForm,food:foodForm,event:eventForm,reminder:reminderForm,goal:goalForm}[b.dataset.qm])());
+}
+$('#fab').onclick=quickMenu;
+$$('[data-quick]').forEach(b=>b.onclick=()=>({journal:journalForm,food:foodForm,event:eventForm,reminder:reminderForm}[b.dataset.quick])());
+$('#newJournal').onclick=journalForm; $('#newFood').onclick=foodForm; $('#newEvent').onclick=()=>eventForm(selectedDate); $('#newReminder').onclick=reminderForm; $('#newGoal').onclick=goalForm;
+
+function renderJournal(filter=''){
+  const data=state.journal.filter(x=>(x.title+' '+x.body+' '+x.tags.join(' ')).toLowerCase().includes(filter.toLowerCase()));
+  $('#journalCount').textContent=`${state.journal.length} total`;
+  $('#journalList').innerHTML=data.length?data.map(x=>`<div class="item">
+    <div class="bubble">${moods[x.mood-1]||'😐'}</div><div class="content"><h4>${esc(x.title)}</h4><p>${esc(x.body)}</p>
+    <div class="meta"><span class="pill">${new Date(x.created).toLocaleDateString([], {day:'numeric',month:'short',year:'numeric'})}</span>${x.tags.map(t=>`<span class="pill">#${esc(t)}</span>`).join('')}</div></div>
+    <div class="item-actions"><button class="tiny" onclick="del('journal','${x.id}')">×</button></div></div>`).join(''):`<div class="empty">Your journal is empty. Start with one sentence.</div>`;
+}
+$('#journalSearchBtn').onclick=()=>openModal('Search journal',`<div class="field"><label>Search</label><input id="js" placeholder="word, tag, idea..." autofocus></div><button class="primary" id="doJs">Search</button>`);
+document.addEventListener('click',e=>{if(e.target.id==='doJs'){const q=$('#js').value;closeModal();setScreen('journal');renderJournal(q)}});
+
+function totals(){
+ const t={cal:0,p:0,c:0,f:0};state.food.filter(x=>isoDate(x.created)===todayISO()).forEach(x=>{t.cal+=x.cal;t.p+=x.p;t.c+=x.c;t.f+=x.f});return t
+}
+function renderFood(){
+ const t=totals(), tg=state.targets;
+ const items=[['CAL',t.cal,tg.cal,'var(--accent)'],['PRO',t.p,tg.protein,'var(--accent2)'],['CARB',t.c,tg.carbs,'#4ade80'],['FAT',t.f,tg.fat,'#fbbf24']];
+ $('#rings').innerHTML=items.map(([n,v,m,c])=>{const pct=Math.min(100,Math.round(v/m*100)||0);return `<div class="ring" style="--pct:${pct}%;--ringcol:${c}"><div class="inside"><strong>${Math.round(v)}</strong><small>${n} / ${m}</small></div></div>`}).join('');
+ const data=state.food.filter(x=>isoDate(x.created)===todayISO());
+ $('#foodCount').textContent=`${data.length} items`;
+ $('#foodList').innerHTML=data.length?data.map(x=>`<div class="item"><div class="bubble">◒</div><div class="content"><h4>${esc(x.name)}</h4><p>${x.cal} kcal · ${x.p}P · ${x.c}C · ${x.f}F</p><div class="meta"><span class="pill">${new Date(x.created).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})}</span></div></div><button class="tiny" onclick="del('food','${x.id}')">×</button></div>`).join(''):`<div class="empty">Nothing logged today.</div>`;
+}
+$('#editTargets').onclick=()=>{
+ const t=state.targets;openModal('Nutrition targets',`<div class="row"><div class="field"><label>Calories</label><input id="tCal" type="number" value="${t.cal}"></div><div class="field"><label>Protein</label><input id="tP" type="number" value="${t.protein}"></div></div><div class="row"><div class="field"><label>Carbs</label><input id="tC" type="number" value="${t.carbs}"></div><div class="field"><label>Fat</label><input id="tF" type="number" value="${t.fat}"></div></div><button class="primary" id="saveTargets">Save targets</button>`);
+ $('#saveTargets').onclick=()=>{state.targets={cal:+$('#tCal').value,protein:+$('#tP').value,carbs:+$('#tC').value,fat:+$('#tF').value};save();closeModal();flash('Targets updated')}
+};
+
+function renderCalendar(){
+ const y=calCursor.getFullYear(),m=calCursor.getMonth();$('#monthLabel').textContent=calCursor.toLocaleDateString([], {month:'long',year:'numeric'});
+ const first=new Date(y,m,1); const start=new Date(y,m,1-first.getDay()); let html=['S','M','T','W','T','F','S'].map(d=>`<div class="dow">${d}</div>`).join('');
+ for(let i=0;i<42;i++){const d=new Date(start);d.setDate(start.getDate()+i);const ds=isoDate(d);const classes=['day'];if(d.getMonth()!=m)classes.push('dim');if(ds===todayISO())classes.push('today');if(ds===selectedDate)classes.push('selected');if(state.events.some(e=>e.date===ds))classes.push('has');html+=`<button class="${classes.join(' ')}" data-date="${ds}">${d.getDate()}</button>`}
+ $('#calendarGrid').innerHTML=html; $$('[data-date]').forEach(b=>b.onclick=()=>{selectedDate=b.dataset.date;renderCalendar();renderEvents()}); renderEvents();
+}
+function renderEvents(){
+ const d=new Date(selectedDate+'T12:00');$('#selectedDateLabel').textContent=d.toLocaleDateString([], {weekday:'long',day:'numeric',month:'long'});
+ const data=state.events.filter(x=>x.date===selectedDate).sort((a,b)=>a.time.localeCompare(b.time));
+ $('#eventList').innerHTML=data.length?data.map(x=>`<div class="item"><div class="bubble">◫</div><div class="content"><h4>${esc(x.title)}</h4><p>${esc(x.notes||'')}</p><div class="meta"><span class="pill">${esc(x.time)}</span></div></div><button class="tiny" onclick="del('events','${x.id}')">×</button></div>`).join(''):`<div class="empty">No events on this day.</div>`;
+}
+$('#prevMonth').onclick=()=>{calCursor.setMonth(calCursor.getMonth()-1);renderCalendar()};$('#nextMonth').onclick=()=>{calCursor.setMonth(calCursor.getMonth()+1);renderCalendar()};
+
+function renderReminders(){
+ const data=[...state.reminders].sort((a,b)=>Number(a.done)-Number(b.done)||(a.when||'').localeCompare(b.when||''));
+ const open=data.filter(x=>!x.done).length;$('#reminderCount').textContent=`${open} open`;
+ $('#reminderList').innerHTML=data.length?data.map(x=>`<div class="item" style="${x.done?'opacity:.45':''}"><button class="bubble" style="border:0;color:white" onclick="toggleReminder('${x.id}')">${x.done?'✓':'○'}</button><div class="content"><h4 style="${x.done?'text-decoration:line-through':''}">${esc(x.title)}</h4><p>${fmtDateTime(x.when)}</p><div class="meta"><span class="pill">${esc(x.priority)}</span>${x.when && new Date(x.when)<new Date()&&!x.done?'<span class="pill" style="color:var(--danger)">OVERDUE</span>':''}</div></div><button class="tiny" onclick="del('reminders','${x.id}')">×</button></div>`).join(''):`<div class="empty">Nothing waiting for you.</div>`;
+}
+window.toggleReminder=id=>{const x=state.reminders.find(r=>r.id===id);if(x){x.done=!x.done;save();if(x.done){flash('Done');confetti(16)}}};
+
+function renderGoals(){
+ $('#goalCount').textContent=`${state.goals.length} active`;
+ $('#goalList').innerHTML=state.goals.length?state.goals.map(x=>`<div class="goal-card"><div class="goal-top"><div class="goal-emoji">${esc(x.emoji)}</div><div class="goal-main"><h4>${esc(x.title)}</h4><p>${esc(x.why||'')}</p>${x.date?`<div class="meta"><span class="pill">Target ${new Date(x.date+'T12:00').toLocaleDateString([], {day:'numeric',month:'short'})}</span></div>`:''}</div><button class="tiny" onclick="del('goals','${x.id}')">×</button></div><div class="goal-stat"><span>Progress</span><strong>${x.progress}%</strong></div><div class="progress"><div class="bar" style="width:${x.progress}%"></div></div><input class="slider" type="range" min="0" max="100" value="${x.progress}" oninput="goalProgress('${x.id}',this.value)"></div>`).join(''):`<div class="empty">Add one goal worth chasing.</div>`;
+}
+window.goalProgress=(id,v)=>{const x=state.goals.find(g=>g.id===id);if(!x)return;const old=x.progress;x.progress=+v;localStorage.setItem(storeKey,JSON.stringify(state));renderHomeMetrics();renderGoals();if(old<100&&x.progress===100){flash('Goal complete');confetti(60)}};
+window.del=(key,id)=>{state[key]=state[key].filter(x=>x.id!==id);save();flash('Removed')};
+
+function renderHomeMetrics(){
+ const latest=state.journal[0];$('#moodMetric').textContent=latest?moods[latest.mood-1]:'—';$('#calMetric').textContent=Math.round(totals().cal);const avg=state.goals.length?Math.round(state.goals.reduce((a,b)=>a+b.progress,0)/state.goals.length):0;$('#goalMetric').textContent=avg+'%';
+ const today=todayISO();const events=state.events.filter(e=>e.date===today).map(e=>({icon:'◫',title:e.title,sub:e.time||'Today'}));
+ const rem=state.reminders.filter(r=>!r.done&&r.when&&isoDate(r.when)===today).map(r=>({icon:'✓',title:r.title,sub:fmtDateTime(r.when)}));
+ const feed=[...events,...rem];$('#todayCount').textContent=feed.length?`${feed.length} things`:'clear';
+ $('#todayFeed').innerHTML=feed.length?feed.map(x=>`<div class="item"><div class="bubble">${x.icon}</div><div class="content"><h4>${esc(x.title)}</h4><p>${esc(x.sub)}</p></div></div>`).join(''):`<div class="empty">Your day is clear. Use the + button to add something.</div>`;
+}
+function renderTop(){
+ const d=new Date();$('#dateLabel').textContent=d.toLocaleDateString([], {weekday:'long',day:'numeric',month:'long'}).toUpperCase();
+ const h=d.getHours();$('#greeting').textContent=h<12?'Own the morning.':h<18?'Keep the day moving.':'Close the day properly.';
+}
+function renderAll(){document.documentElement.style.setProperty('--accent',state.settings.accent);document.documentElement.style.setProperty('--accent2',state.settings.accent2);renderTop();renderHomeMetrics();renderJournal();renderFood();renderCalendar();renderReminders();renderGoals()}
+
+function settings(){
+ openModal('NEXUS settings',`<div class="settingspanel" style="margin-top:10px">
+   <div class="settingsline"><div><strong>Accent</strong><div style="color:var(--muted);font-size:11px;margin-top:3px">Make it yours</div></div><div class="swatches">
+    ${['#7c5cff','#ff4ecd','#ff7a45','#4ade80','#39a7ff'].map(c=>`<button class="sw" data-c="${c}" style="background:${c}"></button>`).join('')}</div></div>
+   <div class="settingsline"><div><strong>Export backup</strong><div style="color:var(--muted);font-size:11px;margin-top:3px">Download all local data</div></div><button class="mini-btn" id="exportBtn">Export</button></div>
+   <div class="settingsline"><div><strong>Import backup</strong><div style="color:var(--muted);font-size:11px;margin-top:3px">Restore a NEXUS JSON</div></div><label class="mini-btn">Import<input id="importFile" type="file" accept=".json" hidden></label></div>
+   <div class="settingsline"><div><strong>Clear everything</strong><div style="color:var(--muted);font-size:11px;margin-top:3px">Permanent on this device</div></div><button class="mini-btn" id="clearBtn">Clear</button></div>
+   <div class="settingsline"><div><strong>Background reminders</strong><div style="color:var(--muted);font-size:11px;margin-top:3px">iOS web apps cannot schedule true offline push reminders without a server. NEXUS marks due items inside the app.</div></div></div>
+ </div>`);
+ $$('[data-c]').forEach(b=>b.onclick=()=>{state.settings.accent=b.dataset.c;save();flash('Theme changed')});
+ $('#exportBtn').onclick=()=>{const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='nexus-backup.json';a.click();URL.revokeObjectURL(a.href)};
+ $('#importFile').onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{state=JSON.parse(r.result);save();closeModal();flash('Backup restored')}catch{flash('Invalid backup')}};r.readAsText(f)};
+ $('#clearBtn').onclick=()=>{if(confirm('Delete all NEXUS data on this device?')){localStorage.removeItem(storeKey);location.reload()}};
+}
+$('#settingsBtn').onclick=settings;
+
+function confetti(n=35){
+ for(let i=0;i<n;i++){const e=document.createElement('div');e.className='confetti';e.style.left=Math.random()*100+'vw';e.style.top='-20px';e.style.background=['#7c5cff','#22d3ee','#4ade80','#fbbf24','#fb7185'][i%5];e.style.transform=`rotate(${Math.random()*360}deg)`;document.body.appendChild(e);const dur=1100+Math.random()*1100;e.animate([{transform:`translateY(0) rotate(0)`,opacity:1},{transform:`translate(${(Math.random()-.5)*180}px,105vh) rotate(${720+Math.random()*720}deg)`,opacity:.9}],{duration:dur,easing:'cubic-bezier(.2,.6,.3,1)'}).onfinish=()=>e.remove()}
+}
+
+document.addEventListener('keydown',e=>{if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='k'){e.preventDefault();quickMenu()}});
+if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js').catch(()=>{})}
+renderAll();
+</script>
+</body>
+</html>

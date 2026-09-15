@@ -1,0 +1,21 @@
+{
+  "name": "NEXUS \u2014 Life OS",
+  "short_name": "NEXUS",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#07080c",
+  "theme_color": "#090a0f",
+  "description": "Journal, food, calendar, reminders and goals in one private personal dashboard.",
+  "icons": [
+    {
+      "src": "icon-180.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
